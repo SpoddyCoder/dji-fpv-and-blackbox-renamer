@@ -1,6 +1,7 @@
-# SpoddyCoder DJI FPV and Blackbox Renamer
+# DFAB-Renamer
 
-A little tool to rename the video and blackbox files pulled from a sesssion.
+DFAB-Renamer is a simple little tool to rename the DJI FPV goggles video + subtitles, air unit video and blackbox files pulled from a sesssion.
+
 Renames to the following format;
 
 ```
@@ -10,17 +11,13 @@ Flight_1.GOG.mp4
 Flight_1.GOG.srt
 ```
 
-The renamed prefix and postfix parts can be modified by editing the tool constants.
-TODO: params for input dir, prefix
-
-
 ## Usage
 
-1. Copy `dfab-renamer.sh` to directory containing the files
-2. Run in test mode to see what would happen `./dfab-renamer.sh`
-3. Run in live mode to rename the files `./dfab-renamer.sh go`
-
+Copy `dfab-renamer.sh` to the directory containing the files and double click it to run.
+It will do a dry-run first and allow you to confirm before renaming the files.
 
 ## Notes
 
-This is bash script (Mac/Linux) - install GitBash to use it on Windows.
+* The renamed prefix and postfix parts can be modified by editing the constants at the top of the tool.
+* If you find this tool useful and wish it did something else too, let me me know.
+* Pull requests welcome.

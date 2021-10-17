@@ -1,62 +1,86 @@
 #!/bin/bash
+#
+# v0.2
+# SpoddyCoder, 2021
+# https://github.com/SpoddyCoder/dji-fpv-and-blackbox-renamer
+#
 
-FLIGHT_PREFIX="Flight_"
-GOG_PRE="DJIG"
+# output filename parts
+OUTPUT_FILENAME_PREFIX="Flight_"
 GOG_POST=".GOG"
-AIR_PRE="DJIU"
 AIR_POST=".AIR"
-BLB_PRE="LOG"
 BLB_POST=""
-testmode=true
 
+# file search terms
+GOG_PRE="DJIG"
+AIR_PRE="DJIU"
+BLB_PRE="LOG"
+
+
+# prompt user to press a key & exit tool
+# $1 : message
+exitPrompt() {
+    echo $1
+    read -p "Press any key to exit " -n 1 -r
+    exit 0
+}
+
+# rename files in current directory
+# $1 : "dry-run" | "go"
+rename() {
+    filecount=0
+    lastflightnum=0
+    for file in ./*; do
+        flightnum=""
+        basename=$(basename "$file")
+        filext=$(echo "${basename##*.}")
+        filename=$(echo "${basename%%.*}")
+        if [[ $filename =~ "$GOG_PRE" ]]; then
+            fileord=$(echo "$filename" | sed "s/${GOG_PRE}//g")
+            flightnum=$(expr $fileord + 1)	# 0 indexed
+            filepost=$GOG_POST
+        fi
+        if [[ $filename =~ "$AIR_PRE" ]]; then
+            fileord=$(echo "$filename" | sed "s/${AIR_PRE}//g")
+            flightnum=$(expr $fileord + 1)	# 0 indexed
+            filepost=$AIR_POST
+        fi
+        if [[ $filename =~ "$BLB_PRE" ]]; then
+            fileord=$(echo "$filename" | sed "s/${BLB_PRE}//g")
+            flightnum=$(expr $fileord + 0)	# 1 indexed
+            filepost=$BLB_POST
+        fi
+        if [ ! -z "$flightnum" ]; then
+            filecount=$(expr $filecount + 1)
+            lastflightnum=$flightnum
+            newfilename="${OUTPUT_FILENAME_PREFIX}${flightnum}${filepost}.${filext}"
+            if [ "$1" == "go" ]; then
+                echo "Renaming: $basename -> $newfilename"
+                mv "$basename" "$newfilename"
+            else
+                echo "Would rename: $basename -> $newfilename"
+            fi
+        fi
+    done
+}
+
+# start
 echo
-echo "SpoddyCoder DJI FPV and Blackbox Renamer"
-if [ "$#" -eq 0 ]; then
-	echo "Test Mode (use 'go' flag to run for real)"
-	tesmode=true
+echo "DJI FPV and Blackbox Renamer"
+echo
+rename "dry-run"
+if (( $filecount == 0 )); then
+    exitPrompt "No files found - have you placed this tool in the directory containing the video + blackbox files?"
 fi
-if [ "$#" -ne 0 ]; then
-	if [ "$1" == "go" ]; then
-		echo "Live Mode - renaming files"
-		testmode=false
-	else
-		echo "Error: invalid arguments"
-		exit 1
-	fi
+echo
+echo "$lastflightnum flights detected"
+read -p "Do you want to rename $filecount files? " -n 1 -r
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo
+    rename "go"
+    echo
+    exitPrompt "$filecount files renamed"
+else
+    echo
+    exitPrompt "Cancelling"
 fi
-
-echo
-for file in ./*; do
-
-	flightnum=""
-	basename=$(basename "$file")
-	filext=$(echo "${basename##*.}")
-	filename=$(echo "${basename%%.*}")
-	if [[ $filename =~ "$GOG_PRE" ]]; then
-		fileord=$(echo "$filename" | sed "s/${GOG_PRE}//g")
-		flightnum=$(expr $fileord + 1)	# 0 indexed
-		filepost=$GOG_POST
-	fi
-	if [[ $filename == *"$AIR_PRE"* ]]; then
-		fileord=$(echo "$filename" | sed "s/${AIR_PRE}//g")
-		flightnum=$(expr $fileord + 1)	# 0 indexed
-		filepost=$AIR_POST
-	fi
-	if [[ $filename == *"$BLB_PRE"* ]]; then
-		fileord=$(echo "$filename" | sed "s/${BLB_PRE}//g")
-		flightnum=$(expr $fileord + 0)	# 1 indexed
-		filepost=$BLB_POST
-	fi
-	if [ ! -z "$flightnum" ]; then
-		newfilename="${FLIGHT_PREFIX}${flightnum}${filepost}.${filext}"
-		echo "Renaming: $basename -> $newfilename"
-		if [ "$testmode" == "false" ]; then
-			mv "$basename" "$newfilename"
-		fi
-	fi
-
-done
-
-echo
-echo "Finished"
-exit 0
