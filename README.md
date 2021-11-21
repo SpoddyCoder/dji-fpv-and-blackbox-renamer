@@ -6,7 +6,7 @@ Renames to the following format;
 
 ```
 Flight_1.AIR.mp4
-Flight_1.BFL
+Flight_1.AIR.BFL
 Flight_1.GOG.mp4
 Flight_1.GOG.srt
 ```

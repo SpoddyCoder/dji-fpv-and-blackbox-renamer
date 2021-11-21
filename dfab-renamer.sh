@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# v0.2
+# v0.2.1
 # SpoddyCoder, 2021
 # https://github.com/SpoddyCoder/dji-fpv-and-blackbox-renamer
 #
@@ -9,7 +9,7 @@
 OUTPUT_FILENAME_PREFIX="Flight_"
 GOG_POST=".GOG"
 AIR_POST=".AIR"
-BLB_POST=""
+BLB_POST=".AIR"     # makes gyroflow work flow easier
 
 # file search terms
 GOG_PRE="DJIG"
