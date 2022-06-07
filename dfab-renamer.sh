@@ -1,8 +1,14 @@
 #!/bin/bash
 #
-# v0.2.1
-# SpoddyCoder, 2021
+# v0.2.2
+# SpoddyCoder, 2022
 # https://github.com/SpoddyCoder/dji-fpv-and-blackbox-renamer
+#
+# This program is free software. It comes without any warranty, to
+# the extent permitted by applicable law. You can redistribute it
+# and/or modify it under the terms of the Do What The Fuck You Want
+# To Public License, Version 2, as published by Sam Hocevar. See
+# http://www.wtfpl.net/ for more details. */
 #
 
 # output filename parts
